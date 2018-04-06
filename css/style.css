@@ -1,11 +1,3 @@
-@font-face {
-	font-family: 'codropsicons';
-	font-weight: normal;
-	font-style: normal;
-	src: url('../fonts/codropsicons/codropsicons.eot');
-	src: url('../fonts/codropsicons/codropsicons.eot?#iefix') format('embedded-opentype'), url('../fonts/codropsicons/codropsicons.woff') format('woff'), url('../fonts/codropsicons/codropsicons.ttf') format('truetype'), url('../fonts/codropsicons/codropsicons.svg#codropsicons') format('svg');
-}
-
 *,
 *::after,
 *::before {
@@ -71,82 +63,6 @@ button:focus {
 	height: 100vh;
 }
 
-/* Header */
-
-.codrops-header {
-	position: absolute;
-	z-index: 100;
-	top: 0;
-	left: 0;
-	display: -webkit-flex;
-	display: flex;
-	-webkit-align-items: center;
-	align-items: center;
-	padding: 1.5em 1em;
-	text-align: center;
-}
-
-.codrops-header h1 {
-	font-size: 1.15em;
-	font-weight: normal;
-	line-height: 1;
-	margin: 0 0 0 1em;
-}
-
-/* Top Navigation Style */
-
-.codrops-links {
-	position: relative;
-	display: inline-block;
-	text-align: center;
-	white-space: nowrap;
-}
-
-.codrops-links::after {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 50%;
-	width: 1px;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.1);
-	-webkit-transform: rotate3d(0, 0, 1, 22.5deg);
-	transform: rotate3d(0, 0, 1, 22.5deg);
-}
-
-.codrops-icon {
-	display: inline-block;
-	width: 1.5em;
-	margin: 0.5em;
-	padding: 0em 0;
-	text-decoration: none;
-}
-
-.codrops-icon span {
-	display: none;
-}
-
-.codrops-icon::before {
-	font-family: 'codropsicons';
-	font-weight: normal;
-	font-style: normal;
-	font-variant: normal;
-	line-height: 1;
-	margin: 0 5px;
-	text-transform: none;
-	speak: none;
-	-webkit-font-smoothing: antialiased;
-}
-
-.codrops-icon--drop::before {
-	content: '\e001';
-	color: #09c;
-}
-
-.codrops-icon--prev::before {
-	content: '\e004';
-}
-
 .main {
 	position: fixed;
 	top: 0;
@@ -156,6 +72,9 @@ button:focus {
 	height: 100vh;
 }
 
+h1 {
+	margin-left: 5vw;
+}
 .mall {
 	position: relative;
 	width: 100%;
@@ -263,19 +182,19 @@ button:focus {
 }
 
 .level--1::after {
-	content: 'L1';
+	content: '1. OG';
 }
 
 .level--2::after {
-	content: 'L2';
+	content: '2. OG';
 }
 
 .level--3::after {
-	content: 'L3';
+	content: '3. OG';
 }
 
 .level--4::after {
-	content: 'L4';
+	content: '4. OG';
 }
 
 .level:not(:first-child) {
@@ -706,25 +625,25 @@ button:focus {
 
 .grouped-by-category [data-category='1']:first-child::before,
 .grouped-by-category :not([data-category='1']) + [data-category='1']::before {
-	content: 'Nourish & Refresh';
+	content: 'SDD';
 	color: #7cbf7f;
 }
 
 .grouped-by-category [data-category='2']:first-child::before,
 .grouped-by-category :not([data-category='2']) + [data-category='2']::before {
-	content: 'Learn & Create';
+	content: 'AAL';
 	color: #6584c7;
 }
 
 .grouped-by-category [data-category='3']:first-child::before,
 .grouped-by-category :not([data-category='3']) + [data-category='3']::before {
-	content: 'Swap & Give';
+	content: 'GOS';
 	color: #dc4b7c;
 }
 
 .grouped-by-category [data-category='4']:first-child::before,
 .grouped-by-category :not([data-category='4']) + [data-category='4']::before {
-	content: 'Relax & Recharge';
+	content: 'SDK';
 	color: #8d65e0;
 }
 
@@ -951,9 +870,5 @@ button:focus {
 	}
 	.content__item {
 		overflow: auto;
-	}
-	.codrops-header {
-		padding-right: 4em;
-		text-align: left;
 	}
 }
