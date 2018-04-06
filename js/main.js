@@ -1,50 +1,20 @@
-/**
- * main.js
- * http://www.codrops.com
- *
- * Licensed under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
- * 
- * Copyright 2016, Codrops
- * http://www.codrops.com
- */
-;(function(window) {
+import Employees from './Employees.js';
+import List from './list.min.js';
+(function(window) {
 
 	'use strict';
 
-	// helper functions
-	// from https://davidwalsh.name/vendor-prefix
-	var prefix = (function () {
-		var styles = window.getComputedStyle(document.documentElement, ''),
-			pre = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o']))[1],
-			dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
-		
-		return {
-			dom: dom,
-			lowercase: pre,
-			css: '-' + pre + '-',
-			js: pre[0].toUpperCase() + pre.substr(1)
-		};
-	})();
-	
+  const employees = new Employees();
+	employees.render();
+
 	// vars & stuff
-	var support = {transitions : Modernizr.csstransitions},
-		transEndEventNames = {'WebkitTransition': 'webkitTransitionEnd', 'MozTransition': 'transitionend', 'OTransition': 'oTransitionEnd', 'msTransition': 'MSTransitionEnd', 'transition': 'transitionend'},
-		transEndEventName = transEndEventNames[Modernizr.prefixed('transition')],
-		onEndTransition = function(el, callback, propTest) {
+	var onEndTransition = function(el, callback, propTest) {
 			var onEndCallbackFn = function( ev ) {
-				if( support.transitions ) {
-					if( ev.target != this || propTest && ev.propertyName !== propTest && ev.propertyName !== prefix.css + propTest ) return;
-					this.removeEventListener( transEndEventName, onEndCallbackFn );
-				}
-				if( callback && typeof callback === 'function' ) { callback.call(this); }
+				if( ev.target != this || propTest && ev.propertyName !== propTest ) return;
+				this.removeEventListener( 'transitionend', onEndCallbackFn );
+			  if( callback && typeof callback === 'function' ) { callback.call(this); }
 			};
-			if( support.transitions ) {
-				el.addEventListener( transEndEventName, onEndCallbackFn );
-			}
-			else {
-				onEndCallbackFn();
-			}
+			el.addEventListener( 'transitionend', onEndCallbackFn );
 		},
 		// the mall element
 		mall = document.querySelector('.mall'),
@@ -125,14 +95,14 @@
 		levelUpCtrl.addEventListener('click', function() { navigate('Down'); });
 		levelDownCtrl.addEventListener('click', function() { navigate('Up'); });
 
-		// sort by name ctrl - add/remove category name (css pseudo element) from list and sorts the spaces by name 
+		// sort by name ctrl - add/remove category name (css pseudo element) from list and sorts the spaces by name
 		sortByNameCtrl.addEventListener('click', function() {
 			if( this.checked ) {
-				classie.remove(spacesEl, 'grouped-by-category');
+				spacesEl.classList.remove( 'grouped-by-category');
 				spacesList.sort('list__link');
 			}
 			else {
-				classie.add(spacesEl, 'grouped-by-category'); 
+				spacesEl.classList.add( 'grouped-by-category');
 				spacesList.sort('category');
 			}
 		});
@@ -143,12 +113,12 @@
 
 			pin.addEventListener('mouseenter', function() {
 				if( !isOpenContentArea ) {
-					classie.add(contentItem, 'content__item--hover');
+					contentItem.classList.add( 'content__item--hover');
 				}
 			});
 			pin.addEventListener('mouseleave', function() {
 				if( !isOpenContentArea ) {
-					classie.remove(contentItem, 'content__item--hover');
+					contentItem.classList.remove( 'content__item--hover');
 				}
 			});
 			pin.addEventListener('click', function(ev) {
@@ -156,7 +126,7 @@
 				// open content for this pin
 				openContent(pin.getAttribute('data-space'));
 				// remove hover class (showing the title)
-				classie.remove(contentItem, 'content__item--hover');
+				contentItem.classList.remove( 'content__item--hover');
 			});
 		});
 
@@ -200,31 +170,31 @@
 		if( isExpanded ) {
 			return false;
 		}
-		
+
 		// update selected level val
 		selectedLevel = level;
 
 		// control navigation controls state
 		setNavigationState();
 
-		classie.add(mallLevelsEl, 'levels--selected-' + selectedLevel);
-		
+		mallLevelsEl.classList.add( 'levels--selected-' + selectedLevel);
+
 		// the level element
 		var levelEl = mallLevels[selectedLevel - 1];
-		classie.add(levelEl, 'level--current');
+		levelEl.classList.add( 'level--current');
 
 		onEndTransition(levelEl, function() {
-			classie.add(mallLevelsEl, 'levels--open');
+			mallLevelsEl.classList.add( 'levels--open');
 
 			// show level pins
 			showPins();
 
 			isExpanded = true;
 		}, 'transform');
-		
+
 		// hide surroundings element
 		hideSurroundings();
-		
+
 		// show mall nav ctrls
 		showMallNav();
 
@@ -241,16 +211,16 @@
 		}
 		isExpanded = false;
 
-		classie.remove(mallLevels[selectedLevel - 1], 'level--current');
-		classie.remove(mallLevelsEl, 'levels--selected-' + selectedLevel);
-		classie.remove(mallLevelsEl, 'levels--open');
+		mallLevels[selectedLevel - 1].classList.remove( 'level--current');
+		mallLevelsEl.classList.remove( 'levels--selected-' + selectedLevel);
+		mallLevelsEl.classList.remove( 'levels--open');
 
 		// hide level pins
 		removePins();
 
 		// shows surrounding element
 		showSurroundings();
-		
+
 		// hide mall nav ctrls
 		hideMallNav();
 
@@ -267,8 +237,8 @@
 	 * Shows all spaces for current level
 	 */
 	function showLevelSpaces() {
-		spacesList.filter(function(item) { 
-			return item.values().level === selectedLevel.toString(); 
+		spacesList.filter(function(item) {
+			return item.values().level === selectedLevel.toString();
 		});
 	}
 
@@ -277,7 +247,7 @@
 	 */
 	function showPins(levelEl) {
 		var levelEl = levelEl || mallLevels[selectedLevel - 1];
-		classie.add(levelEl.querySelector('.level__pins'), 'level__pins--active');
+		levelEl.querySelector('.level__pins').classList.add( 'level__pins--active');
 	}
 
 	/**
@@ -285,21 +255,21 @@
 	 */
 	function removePins(levelEl) {
 		var levelEl = levelEl || mallLevels[selectedLevel - 1];
-		classie.remove(levelEl.querySelector('.level__pins'), 'level__pins--active');
+		levelEl.querySelector('.level__pins').classList.remove( 'level__pins--active');
 	}
 
 	/**
 	 * Show the navigation ctrls
 	 */
 	function showMallNav() {
-		classie.remove(mallNav, 'mallnav--hidden');
+		mallNav.classList.remove( 'mallnav--hidden');
 	}
 
 	/**
 	 * Hide the navigation ctrls
 	 */
 	function hideMallNav() {
-		classie.add(mallNav, 'mallnav--hidden');
+		mallNav.classList.add( 'mallnav--hidden');
 	}
 
 	/**
@@ -307,7 +277,7 @@
 	 */
 	function showSurroundings() {
 		mallSurroundings.forEach(function(el) {
-			classie.remove(el, 'surroundings--hidden');
+			el.classList.remove( 'surroundings--hidden');
 		});
 	}
 
@@ -316,7 +286,7 @@
 	 */
 	function hideSurroundings() {
 		mallSurroundings.forEach(function(el) {
-			classie.add(el, 'surroundings--hidden');
+			el.classList.add( 'surroundings--hidden');
 		});
 	}
 
@@ -341,27 +311,27 @@
 			++selectedLevel;
 		}
 		else {
-			isNavigating = false;	
+			isNavigating = false;
 			return false;
 		}
 
 		// control navigation controls state (enabled/disabled)
 		setNavigationState();
 		// transition direction class
-		classie.add(currentLevel, 'level--moveOut' + direction);
+		currentLevel.classList.add( 'level--moveOut' + direction);
 		// next level element
 		var nextLevel = mallLevels[selectedLevel-1]
 		// ..becomes the current one
-		classie.add(nextLevel, 'level--current');
+		nextLevel.classList.add( 'level--current');
 
 		// when the transition ends..
 		onEndTransition(currentLevel, function() {
-			classie.remove(currentLevel, 'level--moveOut' + direction);
+			currentLevel.classList.remove( 'level--moveOut' + direction);
 			// solves rendering bug for the SVG opacity-fill property
-			setTimeout(function() {classie.remove(currentLevel, 'level--current');}, 60);
+			setTimeout(function() {currentLevel.classList.remove('level--current');}, 60);
 
-			classie.remove(mallLevelsEl, 'levels--selected-' + prevSelectedLevel);
-			classie.add(mallLevelsEl, 'levels--selected-' + selectedLevel);
+			mallLevelsEl.classList.remove( 'levels--selected-' + prevSelectedLevel);
+			mallLevelsEl.classList.add( 'levels--selected-' + selectedLevel);
 
 			// show the current level´s pins
 			showPins();
@@ -381,17 +351,17 @@
 	 */
 	function setNavigationState() {
 		if( selectedLevel == 1 ) {
-			classie.add(levelDownCtrl, 'boxbutton--disabled');
+			levelDownCtrl.classList.add( 'boxbutton--disabled');
 		}
 		else {
-			classie.remove(levelDownCtrl, 'boxbutton--disabled');
+			levelDownCtrl.classList.remove( 'boxbutton--disabled');
 		}
 
 		if( selectedLevel == mallLevelsTotal ) {
-			classie.add(levelUpCtrl, 'boxbutton--disabled');
+			levelUpCtrl.classList.add( 'boxbutton--disabled');
 		}
 		else {
-			classie.remove(levelUpCtrl, 'boxbutton--disabled');
+			levelUpCtrl.classList.remove( 'boxbutton--disabled');
 		}
 	}
 
@@ -409,25 +379,25 @@
 			spaceref = spacerefval;
 			openContentArea();
 		}
-		
+
 		// remove class active (if any) from current list item
 		var activeItem = spacesEl.querySelector('li.list__item--active');
 		if( activeItem ) {
-			classie.remove(activeItem, 'list__item--active');
+			activeItem.classList.remove( 'list__item--active');
 		}
 		// list item gets class active (if the list item is currently shown in the list)
 		var listItem = spacesEl.querySelector('li[data-space="' + spacerefval + '"]')
 		if( listItem ) {
-			classie.add(listItem, 'list__item--active');
+			listItem.classList.add( 'list__item--active');
 		}
 
 		// remove class selected (if any) from current space
-		var activeSpaceArea = mallLevels[selectedLevel - 1].querySelector('svg > .map__space--selected');
-		if( activeSpaceArea ) {
-			classie.remove(activeSpaceArea, 'map__space--selected');
-		}
+		//var activeSpaceArea = mallLevels[selectedLevel - 1].querySelector('svg > .map__space--selected');
+		//if( activeSpaceArea ) {
+		//	activeSpaceArea.classList.remove( 'map__space--selected');
+		//}
 		// svg area gets selected
-		classie.add(mallLevels[selectedLevel - 1].querySelector('svg > .map__space[data-space="' + spaceref + '"]'), 'map__space--selected');
+		//mallLevels[selectedLevel - 1].querySelector('svg > .map__space[data-space="' + spaceref + '"]').classList.add( 'map__space--selected');
 	}
 
 	/**
@@ -438,12 +408,12 @@
 		// shows space
 		showSpace(true);
 		// show close ctrl
-		classie.remove(contentCloseCtrl, 'content__button--hidden');
+		contentCloseCtrl.classList.remove( 'content__button--hidden');
 		// resize mall area
-		classie.add(mall, 'mall--content-open');
+		mall.classList.add( 'mall--content-open');
 		// disable mall nav ctrls
-		classie.add(levelDownCtrl, 'boxbutton--disabled');
-		classie.add(levelUpCtrl, 'boxbutton--disabled');
+		levelDownCtrl.classList.add( 'boxbutton--disabled');
+		levelUpCtrl.classList.add( 'boxbutton--disabled');
 	}
 
 	/**
@@ -453,27 +423,27 @@
 		// the content item
 		var contentItem = contentEl.querySelector('.content__item[data-space="' + spaceref + '"]');
 		// show content
-		classie.add(contentItem, 'content__item--current');
+		contentItem.classList.add( 'content__item--current');
 		if( sliding ) {
 			onEndTransition(contentItem, function() {
-				classie.add(contentEl, 'content--open');
+				contentEl.classList.add( 'content--open');
 			});
 		}
 		// map pin gets selected
-		classie.add(mallLevelsEl.querySelector('.pin[data-space="' + spaceref + '"]'), 'pin--active');
+		mallLevelsEl.querySelector('.pin[data-space="' + spaceref + '"]').classList.add( 'pin--active');
 	}
 
 	/**
 	 * Closes the content area.
 	 */
 	function closeContentArea() {
-		classie.remove(contentEl, 'content--open');
+		contentEl.classList.remove( 'content--open');
 		// close current space
 		hideSpace();
 		// hide close ctrl
-		classie.add(contentCloseCtrl, 'content__button--hidden');
+		contentCloseCtrl.classList.add( 'content__button--hidden');
 		// resize mall area
-		classie.remove(mall, 'mall--content-open');
+		mall.classList.remove( 'mall--content-open');
 		// enable mall nav ctrls
 		if( isExpanded ) {
 			setNavigationState();
@@ -488,40 +458,40 @@
 		// the content item
 		var contentItem = contentEl.querySelector('.content__item[data-space="' + spaceref + '"]');
 		// hide content
-		classie.remove(contentItem, 'content__item--current');
+		contentItem.classList.remove( 'content__item--current');
 		// map pin gets unselected
-		classie.remove(mallLevelsEl.querySelector('.pin[data-space="' + spaceref + '"]'), 'pin--active');
+		mallLevelsEl.querySelector('.pin[data-space="' + spaceref + '"]').classList.remove( 'pin--active');
 		// remove class active (if any) from current list item
 		var activeItem = spacesEl.querySelector('li.list__item--active');
 		if( activeItem ) {
-			classie.remove(activeItem, 'list__item--active');
+			activeItem.classList.remove( 'list__item--active');
 		}
 		// remove class selected (if any) from current space
-		var activeSpaceArea = mallLevels[selectedLevel - 1].querySelector('svg > .map__space--selected');
-		if( activeSpaceArea ) {
-			classie.remove(activeSpaceArea, 'map__space--selected');
-		}
+		//var activeSpaceArea = mallLevels[selectedLevel - 1].querySelector('svg > .map__space--selected');
+		//if( activeSpaceArea ) {
+		//	activeSpaceArea.classList.remove( 'map__space--selected');
+		//}
 	}
 
 	/**
 	 * for smaller screens: open search bar
 	 */
 	function openSearch() {
-		// shows all levels - we want to show all the spaces for smaller screens 
+		// shows all levels - we want to show all the spaces for smaller screens
 		showAllLevels();
 
-		classie.add(spacesListEl, 'spaces-list--open');
-		classie.add(containerEl, 'container--overflow');
+		spacesListEl.classList.add( 'spaces-list--open');
+		containerEl.classList.add( 'container--overflow');
 	}
 
 	/**
 	 * for smaller screens: close search bar
 	 */
 	function closeSearch() {
-		classie.remove(spacesListEl, 'spaces-list--open');
-		classie.remove(containerEl, 'container--overflow');
+		spacesListEl.classList.remove( 'spaces-list--open');
+		containerEl.classList.remove( 'container--overflow');
 	}
-	
+
 	init();
 
 })(window);
